@@ -19,7 +19,7 @@ jobs:
         go-version: 1.15
 
     - name: Composing the infrastructure
-      run: docker-compose up
+      run: docker-compose up -d && sleep 3
     
     - name: Test
       run: go test -v ./...
