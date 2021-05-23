@@ -9,9 +9,8 @@ import (
 )
 
 type featureResponse struct {
-	Id      string `json:"id"`
-	Name    string `json:"name"`
-	Clients []int  `json:"clients"`
+	Name    string   `json:"name"`
+	Clients []string `json:"clients"`
 }
 
 type errorResponse struct {
@@ -35,7 +34,6 @@ func (t *Server) HandleFeatureGetAll() http.HandlerFunc {
 
 		for _, element := range result {
 			t := featureResponse{
-				Id:      element.Id.Hex(),
 				Name:    element.Name,
 				Clients: element.Clients,
 			}
@@ -58,14 +56,13 @@ func (t *Server) HandleFeatureInsert() http.HandlerFunc {
 		if err != nil {
 			res.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(res).Encode(&errorResponse{
-				Message: "Internal server error",
+				Message: err.Error(),
 			})
 			log.Fatalf("Error while handling insert feature: %s", err)
 		}
 
-		res.WriteHeader(http.StatusOK)
+		res.WriteHeader(http.StatusCreated)
 		json.NewEncoder(res).Encode(&featureResponse{
-			Id:      result.Id.String(),
 			Name:    result.Name,
 			Clients: result.Clients,
 		})

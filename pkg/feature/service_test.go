@@ -15,12 +15,12 @@ func NewTestService() *feature.Service {
 	return feature.NewService(database.Collection("feature_test"))
 }
 
-func TestFeatureGetAll(t *testing.T) {
+func TestFeatureGetAllShouldGetAllThree(t *testing.T) {
 	service := NewTestService()
 
-	service.Insert(&feature.FeatureEntity{primitive.NewObjectID(), "feature1", []int{1, 2, 3}})
-	service.Insert(&feature.FeatureEntity{primitive.NewObjectID(), "feature2", []int{2}})
-	service.Insert(&feature.FeatureEntity{primitive.NewObjectID(), "feature3", []int{2}})
+	service.Insert(&feature.FeatureEntity{primitive.NewObjectID(), "feature1", []string{"client1", "client2"}})
+	service.Insert(&feature.FeatureEntity{primitive.NewObjectID(), "feature2", []string{"client1"}})
+	service.Insert(&feature.FeatureEntity{primitive.NewObjectID(), "feature3", []string{"client1"}})
 
 	output, err := service.GetAll()
 	t.Logf("Success!!")
@@ -38,10 +38,27 @@ func TestFeatureGetAll(t *testing.T) {
 	service.GetFeatureCollection().DeleteMany(nil, bson.D{})
 }
 
-func TestFeatureInsert(t *testing.T) {
+func TestFeatureInsertShouldReturnNameAlreadyExistsError(t *testing.T) {
+	service := NewTestService()
+	service.Insert(&feature.FeatureEntity{primitive.NewObjectID(), "feature1", []string{"client1", "client2"}})
+
+	input := &feature.FeatureEntity{primitive.NewObjectID(), "feature1", []string{"client1"}}
+
+	_, err := service.Insert(input)
+
+	if err != nil && err.Error() != "Feature name already exists" {
+		t.Error("Expected error not found.")
+	} else {
+		t.Logf("Success!!")
+	}
+
+	service.GetFeatureCollection().DeleteMany(nil, bson.D{})
+}
+
+func TestFeatureInsertShouldInsertSuccessfully(t *testing.T) {
 	service := NewTestService()
 
-	input := &feature.FeatureEntity{primitive.NilObjectID, "feature1", []int{1, 2, 3}}
+	input := &feature.FeatureEntity{primitive.NewObjectID(), "feature1", []string{"client1"}}
 
 	output, err := service.Insert(input)
 

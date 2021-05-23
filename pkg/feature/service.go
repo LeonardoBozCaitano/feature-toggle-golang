@@ -1,6 +1,8 @@
 package feature
 
 import (
+	"errors"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -9,7 +11,7 @@ import (
 type FeatureEntity struct {
 	Id      primitive.ObjectID `bson:"_id"`
 	Name    string             `bson:"name"`
-	Clients []int              `bson:"clients"`
+	Clients []string           `bson:"clients"`
 }
 
 type Service struct {
@@ -20,6 +22,10 @@ func NewService(collection *mongo.Collection) *Service {
 	return &Service{
 		collection: collection,
 	}
+}
+
+func (service *Service) GetFeatureCollection() (collection *mongo.Collection) {
+	return service.collection
 }
 
 func (service *Service) GetAll() ([]*FeatureEntity, error) {
@@ -55,11 +61,30 @@ func (service *Service) GetAll() ([]*FeatureEntity, error) {
 
 func (service *Service) Insert(feature *FeatureEntity) (*FeatureEntity, error) {
 	feature.Id = primitive.NewObjectID()
-	_, err := service.collection.InsertOne(nil, feature)
+
+	err := service.validateIfFeatureNameExists(feature.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = service.collection.InsertOne(nil, feature)
 
 	return feature, err
 }
 
-func (service *Service) GetFeatureCollection() (collection *mongo.Collection) {
-	return service.collection
+func (service *Service) validateIfFeatureNameExists(name string) error {
+	feature, _ := service.FindByName(name)
+	if feature != nil {
+		return errors.New("Feature name already exists")
+	}
+	return nil
+}
+
+func (service *Service) FindByName(name string) (*FeatureEntity, error) {
+	var feature *FeatureEntity
+	databaseFeature := service.GetFeatureCollection().FindOne(nil, bson.D{primitive.E{Key: "name", Value: name}})
+
+	err := databaseFeature.Decode(&feature)
+
+	return feature, err
 }
