@@ -80,6 +80,20 @@ func (service *Service) validateIfFeatureNameExists(name string) error {
 	return nil
 }
 
+func (service *Service) Update(name string, inputFeature *FeatureEntity) (*FeatureEntity, error) {
+	oldFeature, err := service.FindByName(name)
+	if err != nil {
+		return nil, err
+	}
+	oldFeature.Clients = inputFeature.Clients
+	_, err = service.GetFeatureCollection().UpdateOne(nil, bson.M{"name": name}, bson.D{{"$set", bson.D{{"clients", inputFeature.Clients}}}})
+	if err != nil {
+		return nil, err
+	}
+
+	return oldFeature, err
+}
+
 func (service *Service) FindByName(name string) (*FeatureEntity, error) {
 	var feature *FeatureEntity
 	databaseFeature := service.GetFeatureCollection().FindOne(nil, bson.D{primitive.E{Key: "name", Value: name}})

@@ -80,6 +80,29 @@ func TestFeatureInsertShouldInsertSuccessfully(t *testing.T) {
 	service.GetFeatureCollection().DeleteMany(nil, bson.D{})
 }
 
+func TestFeatureUpdateShouldUpdateSuccessfully(t *testing.T) {
+	service := NewTestService()
+
+	featureName := "feature1"
+	featureUpdateInput := &feature.FeatureEntity{primitive.NewObjectID(), "", []string{"client2", "client3"}}
+	service.Insert(&feature.FeatureEntity{primitive.NewObjectID(), featureName, []string{"client1"}})
+
+	output, _ := service.Update(featureName, featureUpdateInput)
+
+	validate := service.GetFeatureCollection().FindOne(nil, bson.D{primitive.E{Key: "name", Value: featureName}})
+
+	var validationFeature *feature.FeatureEntity
+	validate.Decode(&validationFeature)
+
+	if cmp.Equal(validationFeature, output) && len(validationFeature.Clients) == 2 {
+		t.Logf("Success!!")
+	} else {
+		t.Errorf("wrong features found: %v != %v", validationFeature, output)
+	}
+
+	service.GetFeatureCollection().DeleteMany(nil, bson.D{})
+}
+
 func TestValidateFeatureClientShouldReturnEnabledTrue(t *testing.T) {
 	service := NewTestService()
 

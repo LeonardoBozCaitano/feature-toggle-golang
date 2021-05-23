@@ -72,6 +72,35 @@ func (t *Server) HandleFeatureInsert() http.HandlerFunc {
 	}
 }
 
+func (t *Server) HandleFeatureClientsUpdate() http.HandlerFunc {
+	return func(res http.ResponseWriter, req *http.Request) {
+		vars := mux.Vars(req)
+
+		inputBody := &feature.FeatureEntity{}
+		json.NewDecoder(req.Body).Decode(inputBody)
+
+		inputFeatureName := vars["name"]
+
+		service := feature.NewService(t.Collection)
+		result, err := service.Update(inputFeatureName, inputBody)
+
+		if err != nil {
+			log.Printf("Error while handling insert feature: %s", err)
+			res.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(res).Encode(&errorResponse{
+				Message: err.Error(),
+			})
+			return
+		}
+
+		res.WriteHeader(http.StatusCreated)
+		json.NewEncoder(res).Encode(&featureResponse{
+			Name:    result.Name,
+			Clients: result.Clients,
+		})
+	}
+}
+
 func (t *Server) HandleFeatureClientVerification() http.HandlerFunc {
 	type response struct {
 		Enabled bool `json:"enable"`

@@ -10,7 +10,7 @@ To run the application, you just need to use the docker-compose to build the inf
 
 ### How it works
 
-Feature have a very simple struct:
+The feature has a very simple struct:
 {
     "name": "featureName"
     "clients": [
@@ -23,9 +23,9 @@ Endpoints:
 
 - GetAll features - GET /feature
 - Insert feature - POST /feature
-- Validate if a feature is enabled for a client - GET /feature/{featureName}/{client}
+- Update feature clientes - PATCH /feature/{name}
+- Validate if a feature is enabled for a client - GET /feature/{name}/{client}
 
 ### To do's
 
-- Update feature clients.
 - Request Authentication.
