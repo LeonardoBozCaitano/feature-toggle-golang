@@ -7,3 +7,25 @@ This is a light, simple and fast microservice application builded with golang. I
 ### How to use
 
 To run the application, you just need to use the docker-compose to build the infrastructure and then start the golang aplication using "go run main.go".
+
+### How it works
+
+Feature have a very simple struct:
+{
+    "name": "featureName"
+    "clients": [
+        "yourClientId1",
+        "yourClientId2"
+    ]
+}
+
+Endpoints:
+
+- GetAll features - GET .../feature
+- Insert feature - POST .../feature
+- Validate if a feature is enabled for a client - GET ../feature/{featureName}/{client}
+
+### To do's
+
+- Update feature clients.
+- Request Authentication.
