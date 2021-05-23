@@ -21,9 +21,9 @@ Feature have a very simple struct:
 
 Endpoints:
 
-- GetAll features - GET .../feature
-- Insert feature - POST .../feature
-- Validate if a feature is enabled for a client - GET ../feature/{featureName}/{client}
+- GetAll features - GET /feature
+- Insert feature - POST /feature
+- Validate if a feature is enabled for a client - GET /feature/{featureName}/{client}
 
 ### To do's
 
