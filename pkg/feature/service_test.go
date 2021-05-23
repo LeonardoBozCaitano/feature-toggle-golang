@@ -79,3 +79,47 @@ func TestFeatureInsertShouldInsertSuccessfully(t *testing.T) {
 
 	service.GetFeatureCollection().DeleteMany(nil, bson.D{})
 }
+
+func TestValidateFeatureClientShouldReturnEnabledTrue(t *testing.T) {
+	service := NewTestService()
+
+	inputFeatureName := "feature1"
+	inputClientName := "client1"
+	service.Insert(&feature.FeatureEntity{primitive.NewObjectID(), inputFeatureName, []string{inputClientName}})
+
+	output, err := service.ValidateFeatureClient(inputFeatureName, inputClientName)
+
+	if err != nil {
+		t.Errorf("Error: %v", err)
+	} else {
+		if cmp.Equal(true, *output) {
+			t.Logf("Success!!")
+		} else {
+			t.Errorf("Error on output: %v", *output)
+		}
+	}
+
+	service.GetFeatureCollection().DeleteMany(nil, bson.D{})
+}
+
+func TestValidateFeatureClientShouldReturnEnabledFalse(t *testing.T) {
+	service := NewTestService()
+
+	inputFeatureName := "feature1"
+	inputClientName := "client1"
+	service.Insert(&feature.FeatureEntity{primitive.NewObjectID(), inputFeatureName, []string{"client2", "client3"}})
+
+	output, err := service.ValidateFeatureClient(inputFeatureName, inputClientName)
+
+	if err != nil {
+		t.Errorf("Error: %v", err)
+	} else {
+		if cmp.Equal(false, *output) {
+			t.Logf("Success!!")
+		} else {
+			t.Errorf("Error on output: %v", *output)
+		}
+	}
+
+	service.GetFeatureCollection().DeleteMany(nil, bson.D{})
+}
