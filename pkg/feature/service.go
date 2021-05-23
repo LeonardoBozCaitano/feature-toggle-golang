@@ -86,5 +86,28 @@ func (service *Service) FindByName(name string) (*FeatureEntity, error) {
 
 	err := databaseFeature.Decode(&feature)
 
+	if err != nil && err.Error() == "mongo: no documents in result" {
+		err = errors.New("Feature not found")
+	}
 	return feature, err
+}
+
+func (service *Service) ValidateFeatureClient(name string, client string) (*bool, error) {
+	feature, err := service.FindByName(name)
+	if err != nil {
+		return nil, err
+	}
+
+	result := contains(feature.Clients, client)
+
+	return &result, err
+}
+
+func contains(clients []string, name string) bool {
+	for _, element := range clients {
+		if element == name {
+			return true
+		}
+	}
+	return false
 }
