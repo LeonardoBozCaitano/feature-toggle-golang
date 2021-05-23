@@ -23,11 +23,12 @@ func (t *Server) HandleFeatureGetAll() http.HandlerFunc {
 		result, err := service.GetAll()
 
 		if err != nil {
+			log.Printf("Error while handling insert feature: %s", err)
 			res.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(res).Encode(&errorResponse{
-				Message: "Internal server error",
+				Message: err.Error(),
 			})
-			log.Fatalf("Error while handling insert feature: %s", err)
+			return
 		}
 
 		var featureResponseList []featureResponse
@@ -54,11 +55,12 @@ func (t *Server) HandleFeatureInsert() http.HandlerFunc {
 		result, err := service.Insert(input)
 
 		if err != nil {
+			log.Printf("Error while handling insert feature: %s", err)
 			res.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(res).Encode(&errorResponse{
 				Message: err.Error(),
 			})
-			log.Fatalf("Error while handling insert feature: %s", err)
+			return
 		}
 
 		res.WriteHeader(http.StatusCreated)
