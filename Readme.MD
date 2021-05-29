@@ -6,7 +6,7 @@ This is a light, simple and fast microservice application builded with golang. I
 
 ### How to use
 
-To run the application, you just need to use the docker-compose to build the infrastructure and then start the golang aplication using "go run main.go".
+To run the application, you just need to use the docker-compose to build the infrastructure and start the application on port 8080
 
 ### How it works
 
