@@ -1,0 +1,7 @@
+name: feature-toggle
+version: 1.0.0
+description: Chart that deploys a feature toggle service
+maintainers:
+  - name: Leonardo Boz Caitano
+    email: leonardoboz@gmail.com
+icon: https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png

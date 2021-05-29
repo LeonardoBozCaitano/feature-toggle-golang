@@ -26,3 +26,15 @@ jobs:
 
     - name: Build
       run: go build -v ./...
+
+    - name: DockerHub Login
+      env:
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+
+    - name: Building the image
+      run: docker build . --tag ${{secrets.DOCKER_USER}}/feature-toggle
+
+    - name: Push image to dockerhub
+      run: docker push ${{secrets.DOCKER_USER}}/feature-toggle

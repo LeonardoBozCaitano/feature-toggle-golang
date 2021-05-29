@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "feature-toggle.fullname" . }}
+  labels:
+{{ include "feature-toggle.labels" . | indent 4 }}
+  annotations:
+    prometheus.io/path: /actuator/prometheus
+    prometheus.io/port: "8080"
+    prometheus.io/scrape: "true"
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "feature-toggle.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
