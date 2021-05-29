@@ -7,7 +7,7 @@ type Config struct {
 
 func NewConfig() *Config {
 	return &Config{
-		DatabaseURI:  "mongodb://mongodb:27017/",
+		DatabaseURI:  "mongodb://localhost:27017/",
 		DatabaseName: "feature_toggle",
 	}
 }
