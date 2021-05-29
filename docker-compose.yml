@@ -8,7 +8,16 @@ services:
             - PUID=1000
             - PGID=1000
         ports:
-        - "27017:27017"
+            - "27017:27017"
         restart: unless-stopped
         volumes:
             - /home/mongodb/database:/data/db
+    feature-toggle:
+        build: .
+        ports:
+            - "8080:8080"
+        restart: on-failure
+        depends_on:
+            - mongodb
+        links:
+            - mongodb
