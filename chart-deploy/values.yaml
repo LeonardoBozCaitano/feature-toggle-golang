@@ -28,11 +28,11 @@ hpa:
 
 resources:
   limits:
-    cpu: 640m
-    memory: 1536Mi
+    cpu: 400m
+    memory: 700Mi
   requests:
-    cpu: 300m
-    memory: 1536Mi
+    cpu: 400m
+    memory: 700Mi
 
 livenessProbe:
   enabled: true
