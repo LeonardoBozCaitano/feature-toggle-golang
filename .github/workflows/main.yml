@@ -21,7 +21,14 @@ jobs:
     - name: Composing the infrastructure
       run: docker-compose up -d && sleep 3
 
+    - name: Test
+      env:
+        DATABASE_URI: mongodb://localhost:27017/
+      run: go test -v ./...
+
     - name: Build
+      env:
+        DATABASE_URI: mongodb://mongodb:27017/
       run: go build -v ./...
 
     - name: DockerHub Login

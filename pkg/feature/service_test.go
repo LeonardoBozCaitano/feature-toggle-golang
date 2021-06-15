@@ -2,6 +2,7 @@ package feature_test
 
 import (
 	"testing"
+	"os"
 
 	"github.com/feature_toggle/pkg/feature"
 	"github.com/feature_toggle/pkg/server"
@@ -11,6 +12,7 @@ import (
 )
 
 func NewTestService() *feature.Service {
+    os.Setenv("DATABASE_URI", "mongodb://localhost:27017/")
 	database, _ := server.ConnectToDatabase()
 	return feature.NewService(database.Collection("feature_test"))
 }
